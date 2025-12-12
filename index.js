@@ -5,28 +5,33 @@ export default {
     const method = request.method;
 
     // URL format:
-    // 'https://your-backend.com/post?domain=${URL}&content=${Message}'
+    // https://your-backend.com/post?webhook=WEBHOOK_URL&json=BASE64
 
     // Handle post request
     if (path[0] === "post" && method === "GET") {
-      const domain = url.searchParams.get("domain");
-      const content = url.searchParams.get("content");
+      const webhook = url.searchParams.get("webhook");
+      const encodedJson = url.searchParams.get("json");
 
-      if (!domain || !content) {
-        return new Response("Missing domain or content", { status: 400 });
+      if (!webhook || !encodedJson) {
+        return new Response("Missing webhook or json", { status: 400 });
       }
 
-      const Request = await fetch(domain, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ content })
-      });
-      const text = await Request.text();
-      return new Response(text);
-    }
+      let json;
+      try {
+        const decoded = atob(encodedJson);
+        json = JSON.parse(decoded);
+      } catch (e) {
+        return new Response("Invalid Base64 JSON", { status: 400 });
+      }
 
+      const resp = await fetch(webhook, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(json)
+      });
+      return new Response(await resp.text());
+    }
+    
     return new Response("404 Not Found", { status: 404 });
   }
 };
