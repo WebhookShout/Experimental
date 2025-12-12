@@ -8,10 +8,11 @@ export default {
     // https://your-backend.com/post?webhook=WEBHOOK_URL&json=BASE64
 
     // Handle post request
-    if (path[0] === "post" && method === "GET") {
+    if (path[0] && method === "GET") {
       const webhook = url.searchParams.get("webhook");
       const encodedJson = url.searchParams.get("json");
-
+      const Method = path[0].toUpperCase();
+      
       if (!webhook || !encodedJson) {
         return new Response("Missing webhook or json", { status: 400 });
       }
@@ -25,7 +26,7 @@ export default {
       }
 
       const resp = await fetch(webhook, {
-        method: "POST",
+        method: Method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(json)
       });
