@@ -1,0 +1,3 @@
+name = "custom-api-post"
+main = "index.js"
+compatibility_date = "2025-12-12"
