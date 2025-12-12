@@ -1,17 +1,32 @@
 export default {
   async fetch(request) {
     const url = new URL(request.url);
-    const domain = url.origin; // get service full link
     const path = url.pathname.split("/").filter(Boolean);
     const method = request.method;
-    const ip = request.headers.get("CF-Connecting-IP") || "Unknown";
 
-    if (path[0] === "post" && path[1] && method === "GET") {
-      return new Response('Hello', {
-        headers: { "Content-Type": "text/plain" }
+    // URL format:
+    // https://your-backend.com/post?webhook=URL&content=Hello
+
+    // Handle post request
+    if (path[0] === "post" && method === "GET") {
+      const domain = url.searchParams.get("webhook");
+      const content = url.searchParams.get("content");
+
+      if (!domain || !content) {
+        return new Response("Missing domain or content", { status: 400 });
+      }
+
+      const Request = await fetch(domain, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ content })
       });
+      const text = await Request.text();
+      return new Response(text);
     }
-    
-    return new Response("404: Not found", { status: 404 });
+
+    return new Response("404 Not Found", { status: 404 });
   }
 };
