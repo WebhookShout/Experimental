@@ -5,7 +5,7 @@ export default {
     const method = request.method;
 
     // URL format:
-    // https://your-backend.com/post?domain=URL&content=Hello
+    // 'https://your-backend.com/post?domain=${URL}&content=${Message}'
 
     // Handle post request
     if (path[0] === "post" && method === "GET") {
