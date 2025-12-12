@@ -5,9 +5,9 @@ export default {
     const method = request.method;
 
     // URL format:
-    // https://your-backend.com/post?webhook=WEBHOOK_URL&json=BASE64
+    // https://your-backend.com/post?webhook=${WEBHOOK_URL}&json=${JSON_BASE64_Encoded}
 
-    // Handle post request
+    // Handle requests
     if (path[0] && method === "GET") {
       const webhook = url.searchParams.get("webhook");
       const encodedJson = url.searchParams.get("json");
