@@ -5,11 +5,11 @@ export default {
     const method = request.method;
 
     // URL format:
-    // https://your-backend.com/post?webhook=URL&content=Hello
+    // https://your-backend.com/post?domain=URL&content=Hello
 
     // Handle post request
     if (path[0] === "post" && method === "GET") {
-      const domain = url.searchParams.get("webhook");
+      const domain = url.searchParams.get("domain");
       const content = url.searchParams.get("content");
 
       if (!domain || !content) {
